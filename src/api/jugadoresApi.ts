@@ -1,6 +1,6 @@
 import express from 'express';
 import authMiddleWare from './auth';
-import { addPlayer, deleteJugadorById, findJugadorById, findJugadorByPosition, findJugadores, modifyPlayer } from '../db/Jugadores';
+import { addPlayer, convocarPlayers, deleteJugadorById, findJugadorById, findJugadorByPosition, findJugadores, modifyPlayer } from '../db/Jugadores';
 
 const router = express.Router();
 
@@ -80,6 +80,18 @@ router.put('/players/:id', authMiddleWare, async (req, res) => {
         const injured = req.body.injured;
 
         const result = modifyPlayer(idJugador,position,suspended,injured);
+
+        res.json({result});
+    } catch (error: any) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+router.post('/call', authMiddleWare, async (req, res) => {
+    try {
+        const convocados = req.body.calledPlayersId;
+
+        const result = convocarPlayers(convocados);
 
         res.json({result});
     } catch (error: any) {
